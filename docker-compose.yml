@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  web:
+    build: .
+    image: icore:latest
+    restart: always
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./static/uploads:/app/static/uploads
+      - ./database.db:/app/database.db
+    environment:
+      - ICORE_HOST=0.0.0.0
+      - ICORE_PORT=5000

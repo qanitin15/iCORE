@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>iCORE App</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #f43f5e, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-btn {
+            background-image: linear-gradient(to right, #f43f5e 0%, #a855f7 51%, #f43f5e 100%);
+            background-size: 200% auto;
+            transition: all 0.5s;
+        }
+
+        .gradient-btn:hover {
+            background-position: right center;
+            box-shadow: 0 10px 20px -5px rgba(236, 72, 153, 0.4);
+        }
+
+        .gradient-border {
+            border: 2px solid;
+            border-image-slice: 1;
+            border-image-source: linear-gradient(to bottom right, #f43f5e, #a855f7);
+        }
+
+        #splash-screen,
+        .app-page,
+        .modal-backdrop,
+        .modal-content {
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d8b4fe;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f472b6;
+        }
+
+        .card-hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px -5px rgba(236, 72, 153, 0.15);
+        }
+
+        .heart-btn.liked svg {
+            fill: #f43f5e;
+            stroke: #f43f5e;
+        }
+
+        @keyframes pulse {
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .animate-pulse-logo {
+            animation: pulse 2.5s infinite ease-in-out;
+        }
+
+        .bottom-nav button.active {
+            color: #a855f7;
+            font-weight: 600;
+        }
+
+        .bottom-nav button.active .nav-icon {
+            transform: scale(1.1);
+            background: linear-gradient(to top, #f5d0fe, #fbcfe8);
+            border-radius: 9999px;
+            padding: 4px;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .animate-pop {
+            animation: pop 0.3s ease-out;
+        }
+
+        #toast {
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #login {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Duplicate gradient styles removed (kept earlier definitions) */
+
+        /* Enhanced UI styles */
+        .search-input {
+            border: 1px solid #e6e6f0;
+            padding: 0.5rem 0.75rem;
+            border-radius: 9999px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            transition: box-shadow .15s ease, transform .15s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 8px 30px -12px rgba(168, 85, 247, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .product-fade {
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity .3s ease, transform .3s ease;
+        }
+
+        .product-fade.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .price-badge {
+            background: linear-gradient(90deg, #f43f5e, #a855f7);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* Category pill styles */
+        .category-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .5rem .75rem;
+            background: white;
+            border-radius: 9999px;
+            box-shadow: 0 4px 12px rgba(16, 24, 40, 0.04);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+            font-size: .9rem;
+        }
+
+        .category-pill i {
+            opacity: .9
+        }
+
+        .category-pill .pill-count {
+            background: #f1f1f1;
+            color: #333;
+            padding: 0 .4rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: .75rem
+        }
+
+        .category-pill:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(16, 24, 40, 0.08);
+        }
+
+        .category-pill.active {
+            background: linear-gradient(90deg, #f43f5e, #a855f7);
+            color: white;
+            box-shadow: 0 12px 36px rgba(168, 85, 247, 0.18);
+        }
+
+        .category-pill.active .pill-count {
+            background: rgba(255, 255, 255, 0.2);
+            color: white
+        }
+    </style>
+</head>
+
+<body class="antialiased text-gray-800">
+    <!-- Login removed; login is now served at / (templates/login.html) -->
+
+    <script>
+        // Initialize icons when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
+    </script>
+    <div id="splash-screen"
+        class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gradient-to-br from-rose-50 via-purple-50 to-white">
+        <h1 class="text-7xl font-extrabold tracking-tight animate-pulse-logo gradient-text">iCORE</h1>
+        <p class="mt-4 text-gray-500">Your Ultimate Thrift & Style Companion</p>
+    </div>
+
+    <!-- Debug overlay (visible on the page to capture logs without DevTools) -->
+    <div id="debug-overlay"
+        style="position:fixed;left:8px;bottom:8px;z-index:60;max-width:360px;max-height:220px;overflow:auto;background:rgba(0,0,0,0.72);color:#fff;padding:8px;border-radius:8px;font-size:12px;line-height:1.2;display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <strong>Debug</strong>
+            <button id="debug-clear" style="background:transparent;border:0;color:#fff;cursor:pointer">Clear</button>
+        </div>
+        <div id="debug-logs"></div>
+    </div>
+    <button id="debug-toggle"
+        style="position:fixed;left:8px;bottom:8px;z-index:70;background:#111;color:#fff;border-radius:999px;padding:6px 10px;border:0;cursor:pointer">Logs</button>
+
+    <div id="main-app" class="hidden max-w-md mx-auto bg-white shadow-2xl min-h-screen pb-20 sm:max-w-xl md:max-w-2xl">
+
+        <header class="sticky top-0 bg-white/80 backdrop-blur-md z-20 border-b border-gray-200 shadow-sm">
+            <div class="px-4 py-3 flex items-center gap-3">
+                <div class="flex-1">
+                    <h1 id="page-title" class="text-xl font-bold text-gray-800">Home</h1>
+                    <p class="text-xs text-gray-500 mt-0.5">Discover curated thrift finds</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input id="search-input" class="search-input w-64 text-sm"
+                        placeholder="Search items, e.g. 'denim', 'sneakers'" />
+                    <button id="cart-button" class="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
+                        <i data-lucide="shopping-cart" class="w-6 h-6 text-gray-600"></i>
+                        <span id="cart-badge"
+                            class="absolute -top-1 -right-1 bg-rose-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="relative">
+            <div id="home-page" class="app-page p-4 space-y-8">
+            </div>
+
+            <div id="search-page" class="app-page hidden p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <button id="search-back" class="text-sm text-gray-600 mr-2">&larr; Back</button>
+                        <h2 id="search-title" class="text-lg font-bold inline">Search Results</h2>
+                        <p id="search-sub" class="text-xs text-gray-500 mt-1"> </p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div id="search-count" class="text-sm text-gray-500 mr-4"></div>
+                        <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-md">
+                            <button id="view-list-btn" title="List view"
+                                class="text-xs px-2 py-1 rounded-md bg-white font-medium">List</button>
+                            <button id="view-grid-btn" title="Grid view"
+                                class="text-xs px-2 py-1 rounded-md text-gray-600">Grid</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="search-results" class="space-y-4">
+                    <div id="search-results-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+                </div>
+            </div>
+
+            <div id="wishlist-page" class="app-page hidden p-4">
+                <div id="wishlist-items" class="space-y-4"></div>
+            </div>
+
+            <div id="sell-page" class="app-page hidden p-4">
+                <form id="sell-form" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Photo</label>
+                        <div id="image-preview-container"
+                            class="mt-1 hidden w-full h-48 rounded-md overflow-hidden relative">
+                            <img id="image-preview" src="" class="w-full h-full object-cover">
+                            <button type="button" id="remove-image-btn"
+                                class="absolute top-2 right-2 bg-black/50 text-white rounded-full p-1 leading-none">&times;</button>
+                        </div>
+                        <div id="image-upload-box"
+                            class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer hover:border-purple-400">
+                            <div class="space-y-1 text-center">
+                                <i data-lucide="image-plus" class="mx-auto h-12 w-12 text-gray-400"></i>
+                                <div class="flex text-sm text-gray-600">
+                                    <label for="file-upload"
+                                        class="relative cursor-pointer bg-white rounded-md font-medium text-purple-600 hover:text-purple-500">
+                                        <span>Upload a file</span>
+                                        <input id="file-upload" name="file-upload" type="file" class="sr-only"
+                                            accept="image/png, image/jpeg">
+                                    </label>
+                                </div>
+                                <p class="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div><label for="sell-title" class="text-sm font-medium text-gray-700">Title</label><input
+                            id="sell-title" type="text" placeholder="e.g., Vintage Denim Jacket"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                            required></div>
+                    <div><label for="sell-desc" class="text-sm font-medium text-gray-700">Description</label><textarea
+                            id="sell-desc" rows="3" placeholder="Describe the condition, size, material..."
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                            required></textarea></div>
+                    <div><label for="sell-price" class="text-sm font-medium text-gray-700">Price (₹)</label><input
+                            id="sell-price" type="number" placeholder="499"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                            required></div>
+                    <div><label for="sell-cat" class="text-sm font-medium text-gray-700">Category</label><select
+                            id="sell-cat"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                            required>
+                            <option>Tops</option>
+                            <option>Dresses</option>
+                            <option>Shoes</option>
+                            <option>Accessories</option>
+                        </select></div>
+                    <button type="submit"
+                        class="w-full gradient-btn text-white py-3 rounded-lg font-semibold shadow-md">List My
+                        Item</button>
+                </form>
+            </div>
+
+            <div id="account-page" class="app-page hidden p-4">
+                <div id="account-info" class="flex flex-col items-center text-center">
+                    <img id="account-avatar" src="https://i.pravatar.cc/150?u=anon" alt="User Avatar"
+                        class="w-24 h-24 rounded-full p-1 gradient-border">
+                    <h2 id="account-name" class="text-2xl font-bold mt-3">Guest</h2>
+                    <p id="account-email" class="text-sm text-gray-500">Not signed in</p>
+                    <div class="mt-4 w-full">
+                        <label class="block text-sm font-medium text-gray-700 mb-1 text-left">Profile picture</label>
+                        <div class="flex items-center gap-2">
+                            <input id="avatar-input" type="file" accept="image/*" class="p-1" />
+                            <button id="avatar-upload-btn" class="ml-2 gradient-btn text-white py-2 px-3 rounded-lg"
+                                disabled>Upload</button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Choose a picture and click Upload. The app will not add
+                            any image automatically.</p>
+                    </div>
+                </div>
+                <div id="account-cta" class="mt-4 text-center">
+                    <a href="/" class="text-purple-600 font-semibold">Sign in</a>
+                </div>
+                <div class="grid grid-cols-3 gap-4 text-center my-8">
+                    <div>
+                        <p class="text-2xl font-bold">0</p>
+                        <p class="text-sm text-gray-500">Items Sold</p>
+                    </div>
+                    <div>
+                        <p id="active-listings-count" class="text-2xl font-bold">0</p>
+                        <p class="text-sm text-gray-500">Listings</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold">0</p>
+                        <p class="text-sm text-gray-500">Followers</p>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <a onclick="openModal('userListings')"
+                        class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
+                        <div class="flex items-center gap-4"><i data-lucide="tag"
+                                class="w-6 h-6 text-purple-500"></i><span class="font-semibold">Your Listings</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+                    </a>
+                    <a onclick="showToast('Feature coming soon!')"
+                        class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
+                        <div class="flex items-center gap-4"><i data-lucide="package"
+                                class="w-6 h-6 text-rose-500"></i><span class="font-semibold">Purchase History</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+                    </a>
+                    <a onclick="showToast('Feature coming soon!')"
+                        class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
+                        <div class="flex items-center gap-4"><i data-lucide="settings"
+                                class="w-6 h-6 text-gray-500"></i><span class="font-semibold">Settings</span></div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+                    </a>
+                </div>
+                <div class="mt-8">
+                    <button id="logout-btn"
+                        class="w-full flex items-center justify-center gap-2 p-3 bg-gray-100 rounded-lg font-semibold text-gray-700 hover:bg-rose-100 hover:text-rose-600 transition">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                        <span id="logout-label">Logout</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer
+            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto sm:max-w-xl md:max-w-2xl bg-white border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+            <div class="bottom-nav flex justify-around">
+                <button data-page="home-page"
+                    class="nav-btn active flex-1 flex flex-col items-center justify-center pt-2 pb-1 text-gray-500 transition-colors">
+                    <span class="nav-icon"><i data-lucide="home" class="w-6 h-6"></i></span><span
+                        class="text-xs mt-1">Home</span>
+                </button>
+                <button data-page="wishlist-page"
+                    class="nav-btn flex-1 flex flex-col items-center justify-center pt-2 pb-1 text-gray-500 transition-colors">
+                    <span class="nav-icon"><i data-lucide="heart" class="w-6 h-6"></i></span><span
+                        class="text-xs mt-1">Wishlist</span>
+                </button>
+                <button data-page="sell-page"
+                    class="nav-btn flex-1 flex flex-col items-center justify-center pt-2 pb-1 text-gray-500 transition-colors">
+                    <span class="nav-icon"><i data-lucide="plus-circle" class="w-6 h-6"></i></span><span
+                        class="text-xs mt-1">Sell</span>
+                </button>
+                <button data-page="account-page"
+                    class="nav-btn flex-1 flex flex-col items-center justify-center pt-2 pb-1 text-gray-500 transition-colors">
+                    <span class="nav-icon"><i data-lucide="user" class="w-6 h-6"></i></span><span
+                        class="text-xs mt-1">Account</span>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <div id="modal" class="fixed inset-0 items-center justify-center hidden z-50">
+        <div class="modal-backdrop fixed inset-0"></div>
+        <div
+            class="modal-content bg-white rounded-lg shadow-xl w-11/12 max-w-md m-4 relative transform opacity-0 -translate-y-10 overflow-y-auto max-h-[90vh]">
+        </div>
+    </div>
+
+    <div id="toast"
+        class="fixed bottom-24 right-4 bg-gray-800 text-white py-2 px-5 rounded-lg shadow-xl transform translate-x-[calc(100%+2rem)]">
+        <p id="toast-message"></p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- State Management ---
+            let userWishlist = new Set(JSON.parse(localStorage.getItem('iCORE_wishlist')) || [2]);
+            let userCart = new Set();
+            let userProducts = [];
+            const products = [
+                { id: 1, title: 'Vintage Floral Dress', price: 799, category: 'Dresses', image: 'https://images.unsplash.com/photo-1579369353590-7745c43a3b58?q=80&w=400', description: 'Beautiful vintage dress from the 90s. Perfect condition, fits size M.' },
+                { id: 2, title: 'Classic Leather Jacket', price: 1499, category: 'Tops', image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=400', description: 'Timeless leather jacket. Barely worn. A staple for any wardrobe.' },
+                { id: 3, title: 'High-Waisted Jeans', price: 450, category: 'Tops', image: 'https://images.unsplash.com/photo-1604176354204-926873782855?q=80&w=400', description: 'Comfy and stylish high-waisted mom jeans. Size 28.' },
+                { id: 4, title: 'White Canvas Sneakers', price: 699, category: 'Shoes', image: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=400', description: 'Goes with everything! Classic white sneakers in great condition. Size 7.' },
+                { id: 5, title: 'Summer Knit Top', price: 299, category: 'Tops', image: 'https://images.unsplash.com/photo-1554424349-8eac3c38f172?q=80&w=400', description: 'Light and airy knit top, perfect for summer evenings.' },
+                { id: 6, title: 'Pleated Pink Skirt', price: 349, category: 'Dresses', image: 'https://images.unsplash.com/photo-1591047139829-d919b5ca23d2?q=80&w=400', description: 'Fun and flirty pleated skirt. Excellent condition.' },
+            ];
+
+            // --- Initial Setup and DOM elements ---
+            const splashScreen = document.getElementById('splash-screen');
+            const mainApp = document.getElementById('main-app');
+            const pageTitle = document.getElementById('page-title');
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const modal = document.getElementById('modal');
+            const modalContent = modal.querySelector('.modal-content');
+            let currentPage = 'home-page';
+            let toastTimeout;
+
+            setTimeout(() => {
+                splashScreen.style.opacity = '0';
+                splashScreen.addEventListener('transitionend', () => splashScreen.classList.add('hidden'));
+                mainApp.classList.remove('hidden');
+            }, 2000);
+            lucide.createIcons();
+
+            // --- Page Navigation ---
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetPageId = button.dataset.page;
+                    if (targetPageId === currentPage) return;
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    lucide.createIcons();
+                    const title = targetPageId.split('-')[0];
+                    pageTitle.textContent = title.charAt(0).toUpperCase() + title.slice(1);
+                    if (targetPageId === 'wishlist-page') renderWishlistPage();
+                    if (targetPageId === 'account-page') renderAccountPage();
+                    const currentPageEl = document.getElementById(currentPage);
+                    const targetPage = document.getElementById(targetPageId);
+                    currentPageEl.style.opacity = '0';
+                    setTimeout(() => {
+                        document.querySelectorAll('.app-page').forEach(p => p.classList.add('hidden'));
+                        targetPage.classList.remove('hidden');
+                        setTimeout(() => targetPage.style.opacity = '1', 10);
+                    }, 150);
+                    currentPage = targetPageId;
+                });
+            });
+
+            // --- Rendering Functions ---
+            const renderProducts = (productsToRender, containerId) => {
+                const grid = document.getElementById(containerId);
+                if (!grid) return;
+                grid.innerHTML = '';
+                // show placeholder when no products
+                if (!productsToRender || productsToRender.length === 0) {
+                    grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-500">No items found.</div>`;
+                    return;
+                }
+                productsToRender.forEach((product, idx) => {
+                    const isLiked = userWishlist.has(product.id);
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded-lg overflow-hidden border border-gray-100 shadow-sm transition-all duration-300 card-hover-effect flex flex-col product-fade';
+
+                    // Image wrapper
+                    const imgWrap = document.createElement('div');
+                    imgWrap.className = 'relative group';
+                    const img = document.createElement('img');
+                    img.src = product.image;
+                    img.alt = product.title;
+                    img.className = 'w-full h-48 object-cover cursor-pointer';
+                    img.addEventListener('click', () => openModal('product', product.id));
+                    imgWrap.appendChild(img);
+
+                    // price badge
+                    const priceBadge = document.createElement('div');
+                    priceBadge.className = 'absolute left-3 top-3';
+                    priceBadge.innerHTML = `<span class="price-badge">₹${product.price.toLocaleString('en-IN')}</span>`;
+                    imgWrap.appendChild(priceBadge);
+
+                    // wishlist button
+                    const heartBtn = document.createElement('button');
+                    heartBtn.dataset.productId = product.id;
+                    heartBtn.className = `heart-btn ${isLiked ? 'liked' : ''} absolute top-2 right-2 bg-white/70 backdrop-blur-sm p-1.5 rounded-full text-gray-700 hover:text-rose-500 transition-all duration-300`;
+                    heartBtn.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
+                    heartBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleWishlist(product.id); });
+                    imgWrap.appendChild(heartBtn);
+
+                    card.appendChild(imgWrap);
+
+                    // content
+                    const content = document.createElement('div');
+                    content.className = 'p-3 flex-grow flex flex-col cursor-pointer';
+                    content.addEventListener('click', () => openModal('product', product.id));
+                    const title = document.createElement('h3');
+                    title.className = 'font-semibold text-sm truncate';
+                    title.textContent = product.title;
+                    const desc = document.createElement('p');
+                    desc.className = 'text-xs text-gray-500 mt-1 truncate';
+                    desc.textContent = product.description;
+                    content.appendChild(title);
+                    content.appendChild(desc);
+
+                    // footer actions
+                    const footer = document.createElement('div');
+                    footer.className = 'mt-3 flex items-center justify-between gap-2';
+                    const seller = document.createElement('div');
+                    seller.className = 'text-xs text-gray-500';
+                    seller.textContent = product.category;
+                    const addBtn = document.createElement('button');
+                    addBtn.className = 'gradient-btn text-white py-2 px-3 rounded-lg text-sm';
+                    addBtn.textContent = 'Add';
+                    addBtn.addEventListener('click', (e) => { e.stopPropagation(); addToCart(product.id); });
+                    footer.appendChild(seller);
+                    footer.appendChild(addBtn);
+                    content.appendChild(footer);
+
+                    card.appendChild(content);
+                    grid.appendChild(card);
+
+                    // staggered show animation
+                    setTimeout(() => card.classList.add('show'), 40 * idx);
+                });
+            };
+
+            // --- Category filter wiring ---
+            const setActiveCategory = (btn) => {
+                document.querySelectorAll('.category-pill').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
+                if (btn) {
+                    btn.classList.add('active');
+                    btn.setAttribute('aria-pressed', 'true');
+                }
+            };
+
+            const filterByCategory = (category) => {
+                if (!category || category === 'All') return products;
+                return products.filter(p => p.category === category);
+            };
+
+            // Attach handlers after DOM ready
+            const initCategoryButtons = () => {
+                const categoryBtns = document.querySelectorAll('.category-pill');
+                categoryBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const cat = btn.dataset.category;
+                        setActiveCategory(btn);
+                        // navigate to search page showing this category
+                        renderSearchPage('', cat);
+                    });
+                });
+                // default to All active
+                const first = document.querySelector('.category-pill[data-category="All"]');
+                setActiveCategory(first);
+            };
+
+            // --- Page helpers for SPA navigation ---
+            const showPage = (id) => {
+                document.querySelectorAll('.app-page').forEach(p => p.classList.add('hidden'));
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.remove('hidden');
+                    setTimeout(() => el.style.opacity = '1', 10);
+                    currentPage = id;
+                }
+            };
+
+            const renderSearchPage = (query = '', category = 'All') => {
+                // set title and subtitle
+                const titleEl = document.getElementById('search-title');
+                const subEl = document.getElementById('search-sub');
+                const countEl = document.getElementById('search-count');
+                titleEl.textContent = `Search Results`;
+                subEl.textContent = query ? `for "${query}"` : (category && category !== 'All' ? `in ${category}` : '');
+                // compute results
+                let results = products;
+                if (category && category !== 'All') results = results.filter(p => p.category === category);
+                if (query) results = results.filter(p => (p.title || '').toLowerCase().includes(query.toLowerCase()) || (p.description || '').toLowerCase().includes(query.toLowerCase()));
+                countEl.textContent = `${results.length} result${results.length === 1 ? '' : 's'}`;
+                // render into search-results-grid
+                // Save last results and default view
+                window.__lastSearchResults = results;
+                window.__searchViewMode = window.__searchViewMode || 'list';
+                renderSearchResultsView(window.__searchViewMode);
+                showPage('search-page');
+            };
+
+            // Back button handler for search page
+            try {
+                document.getElementById('search-back').addEventListener('click', () => {
+                    showPage('home-page');
+                });
+            } catch (e) { }
+
+            // Render search results in list or grid
+            function renderSearchResultsView(mode) {
+                const results = window.__lastSearchResults || [];
+                const grid = document.getElementById('search-results-grid');
+                const countEl = document.getElementById('search-count');
+                if (!grid) return;
+                countEl.textContent = `${results.length} result${results.length === 1 ? '' : 's'}`;
+                grid.innerHTML = '';
+                if (mode === 'list') {
+                    // render vertical list
+                    results.forEach((p) => {
+                        const item = document.createElement('div');
+                        item.className = 'flex items-center gap-4 bg-white p-3 rounded-lg shadow-sm';
+                        item.innerHTML = `<img src="${p.image}" class="w-20 h-20 object-cover rounded-md"><div class="flex-1"><h3 class="font-semibold">${p.title}</h3><p class="text-xs text-gray-500">${p.category} • ₹${p.price.toLocaleString('en-IN')}</p></div><div><button class="gradient-btn text-white py-1 px-3 rounded-lg">View</button></div>`;
+                        grid.appendChild(item);
+                    });
+                } else {
+                    // grid (reuse existing card renderer)
+                    renderProducts(results, 'search-results-grid');
+                }
+                // update buttons active state
+                document.getElementById('view-list-btn').classList.toggle('bg-white', mode === 'list');
+                document.getElementById('view-grid-btn').classList.toggle('bg-white', mode === 'grid');
+                window.__searchViewMode = mode;
+            }
+
+            try {
+                document.getElementById('view-list-btn').addEventListener('click', () => renderSearchResultsView('list'));
+                document.getElementById('view-grid-btn').addEventListener('click', () => renderSearchResultsView('grid'));
+            } catch (e) { }
+
+            const renderHomePage = () => {
+                const homePageContainer = document.getElementById('home-page');
+                if (homePageContainer.innerHTML.trim() === '') {
+                    homePageContainer.innerHTML = `
+                <div id="home-greeting"><p class="text-2xl font-bold">Hello, Guest!</p><p class="text-gray-500">Let's find your next favorite piece.</p></div>
+                <div><h2 class="text-lg font-bold text-gray-800 mb-2">Deal of the Day</h2><div id="featured-item" class="bg-gradient-to-br from-rose-100 to-purple-100 rounded-xl p-4 flex items-center gap-4 card-hover-effect"></div></div>
+                <div><h2 class="text-lg font-bold text-gray-800 mb-3">Popular Categories</h2>
+                    <div class="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4">
+                        <div class="flex gap-3">
+                            <button data-category="All" class="category-pill" aria-pressed="true"><i data-lucide="grid" class="w-5 h-5"></i><span>All</span><span class="pill-count">6</span></button>
+                            <button data-category="Tops" class="category-pill"><i data-lucide="shirt" class="w-5 h-5 text-rose-500"></i><span>Tops</span><span class="pill-count">3</span></button>
+                            <button data-category="Dresses" class="category-pill"><i data-lucide="gem" class="w-5 h-5 text-purple-500"></i><span>Dresses</span><span class="pill-count">2</span></button>
+                            <button data-category="Shoes" class="category-pill"><i data-lucide="footprints" class="w-5 h-5 text-rose-500"></i><span>Shoes</span><span class="pill-count">1</span></button>
+                            <button data-category="Accessories" class="category-pill"><i data-lucide="hand" class="w-5 h-5 text-purple-500"></i><span>Accessories</span><span class="pill-count">0</span></button>
+                        </div>
+                    </div>
+                </div>
+                <div><h2 class="text-lg font-bold text-gray-800 mb-3">Just For You</h2><div id="product-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div></div>`;
+                    lucide.createIcons();
+                }
+                const featuredContainer = document.getElementById('featured-item');
+                const featuredProduct = products.find(p => p.id === 2);
+                if (featuredProduct && featuredContainer) {
+                    featuredContainer.innerHTML = `<img src="${featuredProduct.image}" class="w-24 h-24 object-cover rounded-lg shadow-lg"><div class="flex-1"><h3 class="font-bold text-gray-800">${featuredProduct.title}</h3><p class="text-sm text-gray-600">Now only at <span class="font-extrabold text-rose-500 text-lg">₹${featuredProduct.price.toLocaleString('en-IN')}</span></p><button onclick="openModal('product', ${featuredProduct.id})" class="text-xs font-semibold text-purple-600 mt-1">Shop Now &rarr;</button></div>`;
+                }
+                renderProducts(products, 'product-grid');
+            };
+
+            const renderWishlistPage = () => {
+                const container = document.getElementById('wishlist-items');
+                const wishlistProducts = products.filter(p => userWishlist.has(p.id));
+                if (wishlistProducts.length > 0) {
+                    container.innerHTML = wishlistProducts.map(p => {
+                        const isInCart = userCart.has(p.id);
+                        return `<div class="bg-white p-3 rounded-lg shadow-md flex items-center gap-4"><img src="${p.image}" class="w-20 h-20 rounded-md object-cover"><div class="flex-grow"><p class="font-semibold">${p.title}</p><p class="text-sm text-gray-700 font-bold">₹${p.price.toLocaleString('en-IN')}</p></div><div class="flex flex-col gap-2"><button onclick="toggleWishlist(${p.id}, true)" class="p-2 rounded-full bg-rose-100 text-rose-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button><button onclick="addToCartFromWishlist(${p.id})" class="p-2 rounded-full ${isInCart ? 'bg-gray-200 text-gray-500' : 'bg-purple-100 text-purple-600'}" ${isInCart ? 'disabled' : ''}><i data-lucide="${isInCart ? 'check' : 'shopping-cart'}" class="w-4 h-4"></i></button></div></div>`;
+                    }).join('');
+                } else {
+                    container.innerHTML = `<div class="text-center py-16 px-4"><div class="mx-auto w-24 h-24 bg-rose-100 rounded-full flex items-center justify-center"><i data-lucide="heart-crack" class="w-12 h-12 text-rose-400"></i></div><h3 class="text-xl font-bold mt-4">Your Wishlist is Empty</h3><p class="text-gray-500 mt-2 mb-6">Looks like you haven't liked anything yet. Let's change that!</p><button id="discover-btn" class="gradient-btn text-white font-semibold py-2 px-6 rounded-lg">Discover Items</button></div>`;
+                    document.getElementById('discover-btn').addEventListener('click', () => {
+                        document.querySelector('.nav-btn[data-page="home-page"]').click();
+                    });
+                }
+                lucide.createIcons();
+            };
+
+            const renderAccountPage = () => {
+                const listingsCountEl = document.getElementById('active-listings-count');
+                if (listingsCountEl) listingsCountEl.textContent = (userProducts && userProducts.length) ? userProducts.length : 0;
+            };
+
+            // --- Modal System ---
+            const closeModal = () => {
+                modal.classList.add('opacity-0');
+                modalContent.classList.add('opacity-0', '-translate-y-10');
+                setTimeout(() => { modal.classList.add('hidden'); modalContent.innerHTML = ''; }, 300);
+            };
+            window.closeModal = closeModal;
+
+            const modalContentGenerators = {
+                product: (id) => {
+                    const product = products.find(p => p.id === id);
+                    const isInCart = userCart.has(id);
+                    return `<button onclick="closeModal()" class="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 z-10">&times;</button><img src="${product.image}" alt="${product.title}" class="w-full h-64 object-cover rounded-t-lg"><div class="p-5"><h2 class="text-2xl font-bold">${product.title}</h2><p class="text-xl font-semibold text-gray-800 mt-1">₹${product.price.toLocaleString('en-IN')}</p><p class="text-gray-600 text-sm mt-4">${product.description}</p><button onclick="addToCart(${id})" class="w-full mt-5 gradient-btn text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 ${isInCart ? 'opacity-70 cursor-not-allowed' : ''}" ${isInCart ? 'disabled' : ''}><i data-lucide="${isInCart ? 'check-circle' : 'shopping-cart'}" class="w-5 h-5"></i><span>${isInCart ? 'Added to Cart' : 'Add to Cart'}</span></button></div>`;
+                },
+                cart: () => {
+                    const cartProducts = products.filter(p => userCart.has(p.id));
+                    const subtotal = cartProducts.reduce((acc, p) => acc + p.price, 0);
+                    const itemsHtml = cartProducts.length > 0 ? cartProducts.map(p => `<div class="flex items-center justify-between p-2 rounded-md"><div class="flex items-center space-x-3"><img src="${p.image}" class="w-16 h-16 rounded-md object-cover"><div><p class="font-semibold">${p.title}</p><p class="text-sm text-gray-600">₹${p.price.toLocaleString('en-IN')}</p></div></div><button onclick="removeFromCart(${p.id})" class="p-1.5 rounded-full hover:bg-rose-100 text-gray-500 hover:text-rose-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join('') : '<p class="text-center text-gray-500 py-4">Your cart is empty.</p>';
+                    return `<div class="p-5"><div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">Shopping Cart</h2><button onclick="closeModal()" class="p-1 rounded-full hover:bg-gray-100">&times;</button></div><div class="space-y-2 max-h-64 overflow-y-auto pr-2">${itemsHtml}</div>${cartProducts.length > 0 ? `<div class="mt-5 pt-5 border-t"><div class="flex justify-between font-semibold"><p>Subtotal</p><p>₹${subtotal.toLocaleString('en-IN')}</p></div><button class="w-full mt-4 gradient-btn text-white py-3 rounded-lg font-semibold">Proceed to Checkout</button></div>` : ''}</div>`;
+                },
+                userListings: () => {
+                    const itemsHtml = userProducts.length > 0 ? userProducts.map(p => `<div class="flex items-center justify-between p-2 rounded-md hover:bg-gray-50"><div class="flex items-center space-x-3"><img src="${p.image}" class="w-16 h-16 rounded-md object-cover"><div><p class="font-semibold">${p.title}</p><p class="text-sm text-gray-600">₹${p.price.toLocaleString('en-IN')}</p></div></div><button onclick="showToast('Feature coming soon!')" class="p-1.5 rounded-full text-gray-500 hover:bg-gray-200"><i data-lucide="more-vertical" class="w-4 h-4"></i></button></div>`).join('') : '<p class="text-center text-gray-500 py-4">You haven\'t listed any items yet.</p>';
+                    return `<div class="p-5"><div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">Your Listings</h2><button onclick="closeModal()" class="p-1 rounded-full hover:bg-gray-100">&times;</button></div><div class="space-y-2 max-h-80 overflow-y-auto pr-2">${itemsHtml}</div></div>`;
+                }
+            };
+
+            window.openModal = (type, ...args) => {
+                modalContent.innerHTML = modalContentGenerators[type](...args);
+                modal.classList.remove('hidden', 'opacity-0'); modal.classList.add('flex');
+                setTimeout(() => modalContent.classList.remove('opacity-0', '-translate-y-10'), 10);
+                lucide.createIcons();
+            };
+
+            // --- Core Logic ---
+            window.showToast = (message) => {
+                const toast = document.getElementById('toast');
+                const toastMessage = document.getElementById('toast-message');
+                toastMessage.textContent = message;
+                toast.classList.remove('translate-x-[calc(100%+2rem)]');
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    toast.classList.add('translate-x-[calc(100%+2rem)]');
+                }, 3000);
+            };
+
+            const saveWishlist = () => {
+                localStorage.setItem('iCORE_wishlist', JSON.stringify(Array.from(userWishlist)));
+            };
+
+            const updateCartBadge = () => {
+                const badge = document.getElementById('cart-badge');
+                badge.textContent = userCart.size;
+                badge.classList.toggle('hidden', userCart.size === 0);
+                badge.classList.add('animate-pop');
+                badge.addEventListener('animationend', () => badge.classList.remove('animate-pop'), { once: true });
+            };
+
+            window.addToCart = (productId) => {
+                if (userCart.has(productId)) return;
+                userCart.add(productId);
+                updateCartBadge();
+                showToast("Added to Cart!");
+                closeModal();
+                openModal('product', productId);
+            };
+
+            window.addToCartFromWishlist = (productId) => {
+                if (userCart.has(productId)) return;
+                userCart.add(productId);
+                updateCartBadge();
+                showToast("Added to Cart!");
+                renderWishlistPage();
+            };
+
+            window.removeFromCart = (productId) => {
+                userCart.delete(productId);
+                updateCartBadge();
+                openModal('cart');
+            };
+
+            window.toggleWishlist = (productId, fromWishlistPage = false) => {
+                const heartButton = document.querySelector(`.heart-btn[data-product-id="${productId}"]`);
+                if (userWishlist.has(productId)) {
+                    userWishlist.delete(productId);
+                    if (heartButton) heartButton.classList.remove('liked');
+                    showToast("Removed from Wishlist!");
+                } else {
+                    userWishlist.add(productId);
+                    if (heartButton) heartButton.classList.add('liked');
+                    showToast("Added to Wishlist!");
+                }
+                saveWishlist();
+                if (fromWishlistPage) renderWishlistPage();
+            };
+
+            // --- Event Listeners ---
+            document.getElementById('cart-button').addEventListener('click', () => openModal('cart'));
+            document.body.addEventListener('click', (e) => {
+                const heartBtn = e.target.closest('.heart-btn');
+                if (heartBtn) {
+                    toggleWishlist(parseInt(heartBtn.dataset.productId));
+                }
+            });
+
+            // --- Sell Page Logic ---
+            const sellForm = document.getElementById('sell-form');
+            const fileInput = document.getElementById('file-upload');
+            const imagePreviewContainer = document.getElementById('image-preview-container');
+            const imagePreview = document.getElementById('image-preview');
+            const imageUploadBox = document.getElementById('image-upload-box');
+            const removeImageBtn = document.getElementById('remove-image-btn');
+            let uploadedImageUrl = null;
+            imageUploadBox.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        uploadedImageUrl = event.target.result;
+                        imagePreview.src = uploadedImageUrl;
+                        imagePreviewContainer.classList.remove('hidden');
+                        imageUploadBox.classList.add('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            const resetImageUpload = () => {
+                fileInput.value = '';
+                imagePreview.src = '';
+                uploadedImageUrl = null;
+                imagePreviewContainer.classList.add('hidden');
+                imageUploadBox.classList.remove('hidden');
+            }
+            removeImageBtn.addEventListener('click', resetImageUpload);
+            sellForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const newProduct = {
+                    id: Date.now(),
+                    title: document.getElementById('sell-title').value,
+                    price: parseFloat(document.getElementById('sell-price').value),
+                    category: document.getElementById('sell-cat').value,
+                    image: uploadedImageUrl || 'https://placehold.co/400x400/fecdd3/f43f5e?text=iCORE',
+                    description: document.getElementById('sell-desc').value
+                };
+                products.unshift(newProduct);
+                userProducts.unshift(newProduct);
+                renderHomePage();
+                showToast('Item listed successfully!');
+                sellForm.reset();
+                resetImageUpload();
+                document.querySelector('.nav-btn[data-page="home-page"]').click();
+            });
+
+            // --- Initial Render ---
+            renderHomePage();
+            // initialize category buttons so they filter products
+            try { initCategoryButtons(); } catch (e) { /* ignore if not present */ }
+            // debug: ensure search input exists
+            try { console.debug('search-input present?', !!document.getElementById('search-input')); showDebugLog(`search-input present? ${!!document.getElementById('search-input')}`); } catch (e) { }
+            // Debug overlay helpers
+            function showDebugLog(msg) {
+                try {
+                    const overlay = document.getElementById('debug-overlay');
+                    const logs = document.getElementById('debug-logs');
+                    if (!overlay || !logs) return;
+                    overlay.style.display = 'block';
+                    const entry = document.createElement('div');
+                    entry.textContent = `[${new Date().toLocaleTimeString()}] ${typeof msg === 'object' ? JSON.stringify(msg) : msg}`;
+                    logs.insertBefore(entry, logs.firstChild);
+                } catch (e) { /* ignore */ }
+            }
+            document.getElementById('debug-toggle').addEventListener('click', () => {
+                const overlay = document.getElementById('debug-overlay');
+                overlay.style.display = overlay.style.display === 'none' ? 'block' : 'none';
+            });
+            document.getElementById('debug-clear').addEventListener('click', () => { document.getElementById('debug-logs').innerHTML = ''; });
+
+            // Search wiring: robust delegated handler so timing doesn't matter
+            const applySearchFilter = () => {
+                const input = document.getElementById('search-input');
+                const q = input ? input.value.trim().toLowerCase() : '';
+                // start from active category (or all)
+                const active = document.querySelector('.category-pill.active');
+                let filtered = products;
+                if (active) filtered = filterByCategory(active.dataset.category);
+                if (q) filtered = filtered.filter(p => (p.title || '').toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q));
+                console.debug('applySearchFilter', { query: q, activeCategory: active ? active.dataset.category : 'All', results: filtered.length });
+                try { showDebugLog({ query: q, activeCategory: active ? active.dataset.category : 'All', results: filtered.length }); } catch (e) { }
+                renderProducts(filtered, 'product-grid');
+            };
+
+            // delegate input events (works even if element wasn't present when script ran)
+            document.addEventListener('input', (e) => {
+                if (e.target && e.target.id === 'search-input') {
+                    // debounce
+                    if (window.__iCORE_search_timer) clearTimeout(window.__iCORE_search_timer);
+                    window.__iCORE_search_timer = setTimeout(() => applySearchFilter(), 160);
+                }
+            });
+
+            // support Enter key to apply immediately
+            document.addEventListener('keydown', (e) => {
+                const el = document.activeElement;
+                if (el && el.id === 'search-input' && e.key === 'Enter') {
+                    e.preventDefault();
+                    const q = el.value.trim();
+                    // determine active category
+                    const active = document.querySelector('.category-pill.active');
+                    const cat = active ? active.dataset.category : 'All';
+                    renderSearchPage(q, cat);
+                }
+            });
+            // If the register flow stored a prefill user in sessionStorage, use it to populate UI immediately
+            try {
+                const prefill = sessionStorage.getItem('iCORE_prefill_user');
+                if (prefill) {
+                    const user = JSON.parse(prefill);
+                    // populate account UI
+                    document.getElementById('account-avatar').src = user.avatar || 'https://i.pravatar.cc/150?u=anon';
+                    document.getElementById('account-name').textContent = user.name || user.email;
+                    document.getElementById('account-email').textContent = user.email;
+                    document.getElementById('account-cta').style.display = 'none';
+                    document.getElementById('logout-btn').style.display = 'block';
+                    // set wishlist/cart from localStorage if present (register saved them)
+                    try { userWishlist = new Set(JSON.parse(localStorage.getItem('iCORE_wishlist') || '[]')); } catch (e) { userWishlist = new Set(); }
+                    try { userCart = new Set(JSON.parse(localStorage.getItem('iCORE_cart') || '[]')); } catch (e) { userCart = new Set(); }
+                    updateCartBadge();
+                    document.getElementById('active-listings-count').textContent = (user.listings || []).length || 0;
+                    // Update home greeting with the user's name
+                    try {
+                        const hg = document.getElementById('home-greeting');
+                        if (hg) hg.innerHTML = `<p class="text-2xl font-bold">Hello, ${user.name || user.email}!</p><p class="text-gray-500">Let's find your next favorite piece.</p>`;
+                    } catch (e) { }
+                    // remove the prefill so next load uses real backend data
+                    sessionStorage.removeItem('iCORE_prefill_user');
+                } else {
+                    // Load account info from backend as before
+                    if (typeof loadAccountInfo === 'function') loadAccountInfo();
+                }
+            } catch (e) {
+                if (typeof loadAccountInfo === 'function') loadAccountInfo();
+            }
+
+            // Avatar upload wiring (enable upload button when file chosen)
+            try {
+                const avatarInput = document.getElementById('avatar-input');
+                const avatarUploadBtn = document.getElementById('avatar-upload-btn');
+                if (avatarInput && avatarUploadBtn) {
+                    avatarInput.addEventListener('change', () => {
+                        avatarUploadBtn.disabled = !avatarInput.files || avatarInput.files.length === 0;
+                    });
+                    avatarUploadBtn.addEventListener('click', async () => {
+                        if (!avatarInput.files || avatarInput.files.length === 0) return;
+                        const file = avatarInput.files[0];
+                        const fd = new FormData();
+                        fd.append('avatar', file);
+                        avatarUploadBtn.disabled = true;
+                        showToast('Uploading avatar...');
+                        try {
+                            const res = await fetch('/api/user/avatar', { method: 'POST', body: fd, credentials: 'same-origin' });
+                            const j = await res.json();
+                            if (res.ok && j.avatar) {
+                                document.getElementById('account-avatar').src = j.avatar;
+                                showToast('Profile picture updated!');
+                                avatarInput.value = '';
+                                avatarUploadBtn.disabled = true;
+                            } else {
+                                showToast(j.message || 'Upload failed');
+                                avatarUploadBtn.disabled = false;
+                            }
+                        } catch (err) {
+                            showToast('Upload failed — network error');
+                            avatarUploadBtn.disabled = false;
+                        }
+                    });
+                }
+            } catch (e) {
+                // ignore
+            }
+        });
+    </script>
+
+    <script>
+        // Populate account info from backend when account page is opened
+        async function loadAccountInfo() {
+            try {
+                const sessionRes = await fetch('/api/session_check');
+                const session = await sessionRes.json();
+                if (!session.isLoggedIn) {
+                    document.getElementById('account-name').textContent = 'Guest';
+                    document.getElementById('account-email').textContent = 'Not signed in';
+                    document.getElementById('account-cta').style.display = 'block';
+                    document.getElementById('logout-btn').style.display = 'none';
+                    return;
+                }
+
+                const userRes = await fetch('/api/user');
+                if (!userRes.ok) throw new Error('Not authenticated');
+                const user = await userRes.json();
+                document.getElementById('account-avatar').src = user.avatar || 'https://i.pravatar.cc/150?u=anon';
+                document.getElementById('account-name').textContent = user.name || user.email;
+                document.getElementById('account-email').textContent = user.email;
+                document.getElementById('account-cta').style.display = 'none';
+                document.getElementById('logout-btn').style.display = 'block';
+                document.getElementById('active-listings-count').textContent = (user.listings || []).length || 0;
+                // Update home greeting with the user's name
+                try {
+                    const hg = document.getElementById('home-greeting');
+                    if (hg) hg.innerHTML = `<p class="text-2xl font-bold">Hello, ${user.name || user.email}!</p><p class="text-gray-500">Let's find your next favorite piece.</p>`;
+                } catch (e) { }
+            } catch (err) {
+                console.warn('Could not load account info', err);
+            }
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/';
+        });
+
+        // When the account page is shown, refresh data
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.dataset.page === 'account-page') loadAccountInfo();
+            });
+        });
+    </script>
+
+</body>
+
+</html>

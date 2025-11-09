@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Create an account — iCORE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-btn {
+            background-image: linear-gradient(90deg, #f43f5e, #a855f7);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-rose-50 via-purple-50 to-white flex items-center justify-center">
+    <div class="max-w-3xl w-full px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+            <!-- Info column -->
+            <div class="hidden md:flex flex-col justify-center bg-white/60 rounded-2xl p-8 shadow-lg">
+                <h1 class="text-4xl font-extrabold gradient-text">Join iCORE</h1>
+                <p class="mt-3 text-gray-600">Create your account to list items, save favourites and purchase from local
+                    sellers.</p>
+                <ul class="mt-6 space-y-2 text-sm text-gray-700">
+                    <li>• Fast listings with photo upload</li>
+                    <li>• Secure accounts with hashed passwords</li>
+                    <li>• Wishlist, cart, and order history</li>
+                </ul>
+            </div>
+
+            <!-- Form column -->
+            <div class="bg-white p-8 rounded-2xl shadow-xl">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold">Create your account</h2>
+                        <p class="text-sm text-gray-500">Get started with iCORE — it only takes a minute.</p>
+                    </div>
+                    <img src="/logo.jpg.jpg" alt="iCORE logo" class="w-12 h-12 rounded-full object-cover">
+                </div>
+
+                <form id="register-form" class="mt-6 space-y-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Full name</label>
+                        <input id="name" type="text" required
+                            class="mt-1 block w-full rounded-md border-gray-200 shadow-sm p-3 focus:ring-2 focus:ring-purple-300" />
+                    </div>
+
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input id="email" type="email" autocomplete="email" required
+                            class="mt-1 block w-full rounded-md border-gray-200 shadow-sm p-3 focus:ring-2 focus:ring-purple-300" />
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <div class="relative mt-1">
+                            <input id="password" type="password" required
+                                class="block w-full rounded-md border-gray-200 shadow-sm p-3 pr-28 focus:ring-2 focus:ring-purple-300" />
+                            <input id="password-confirm" type="password" placeholder="Confirm password"
+                                class="hidden" />
+                            <button id="toggle-password" type="button"
+                                class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">Show</button>
+                        </div>
+                        <p id="pw-hint" class="text-xs text-gray-500 mt-2">Use a strong password with letters and
+                            numbers.</p>
+                    </div>
+
+                    <div>
+                        <button id="submit" type="submit"
+                            class="w-full gradient-btn text-white font-semibold py-3 rounded-lg shadow">
+                            <span id="submit-text">Create account</span>
+                            <svg id="submit-spinner" class="hidden animate-spin inline-block ml-2 h-5 w-5"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+
+                <p id="message" class="mt-4 text-sm text-red-600 min-h-[1.2rem]"></p>
+                <p class="mt-4 text-sm text-gray-600">Already have an account? <a href="/"
+                        class="text-purple-600 font-medium">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('register-form');
+        const msg = document.getElementById('message');
+        const submitBtn = document.getElementById('submit');
+        const spinner = document.getElementById('submit-spinner');
+        const togglePw = document.getElementById('toggle-password');
+        const pwInput = document.getElementById('password');
+
+        togglePw.addEventListener('click', () => {
+            if (pwInput.type === 'password') { pwInput.type = 'text'; togglePw.textContent = 'Hide'; }
+            else { pwInput.type = 'password'; togglePw.textContent = 'Show'; }
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('register form submit handler running');
+            msg.textContent = '';
+            submitBtn.disabled = true; spinner.classList.remove('hidden');
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = pwInput.value;
+
+            if (!name || !email || !password) {
+                msg.textContent = 'Please fill all fields.';
+                submitBtn.disabled = false; spinner.classList.add('hidden');
+                return;
+            }
+            if (password.length < 6) {
+                msg.textContent = 'Password must be at least 6 characters.';
+                submitBtn.disabled = false; spinner.classList.add('hidden');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    // use returned user object (server sets session cookie)
+                    showToast('Account created successfully! Redirecting to app...');
+                    // Store the returned user so the app can pre-fill UI immediately
+                    try {
+                        if (data && data.user) {
+                            // Save minimal user info to sessionStorage for immediate UI population
+                            sessionStorage.setItem('iCORE_prefill_user', JSON.stringify(data.user));
+                            // Also mirror wishlist/cart into localStorage so the app state matches
+                            try { localStorage.setItem('iCORE_wishlist', JSON.stringify(data.user.wishlist || [])); } catch (e) { }
+                            try { localStorage.setItem('iCORE_cart', JSON.stringify(data.user.cart || [])); } catch (e) { }
+                        }
+                    } catch (e) {
+                        // ignore
+                    }
+                    // small delay for UX then redirect to /app
+                    setTimeout(() => window.location.href = '/app', 600);
+                } else {
+                    msg.textContent = data.message || 'Registration failed';
+                }
+            } catch (err) {
+                msg.textContent = 'Network error — try again.';
+            } finally {
+                submitBtn.disabled = false; spinner.classList.add('hidden');
+            }
+        });
+    </script>
+
+    <!-- Toast -->
+    <div id="toast"
+        class="fixed top-6 right-6 transform translate-x-24 opacity-0 transition-all duration-300 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg">
+        <div id="toast-text" class="text-sm"></div>
+    </div>
+
+    <script>
+        function showToast(text, ms = 1400) {
+            const t = document.getElementById('toast');
+            const tt = document.getElementById('toast-text');
+            tt.textContent = text;
+            t.classList.remove('translate-x-24', 'opacity-0');
+            t.classList.add('translate-x-0', 'opacity-100');
+            setTimeout(() => {
+                t.classList.remove('translate-x-0', 'opacity-100');
+                t.classList.add('translate-x-24', 'opacity-0');
+            }, ms);
+        }
+    </script>
+</body>
+
+</html>

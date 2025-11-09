@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>iCORE - Your Fashion Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* A neutral gray background for the app feel */
+        }
+        #opening-page {
+            background-image: linear-gradient(to top, #fde4e4 0%, #e6e9f0 100%);
+            transition: opacity 0.7s ease-in-out;
+        }
+        .app-page {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            will-change: transform, opacity;
+        }
+        .app-page.hidden {
+            display: none;
+        }
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.6);
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
+            max-height: 90vh;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+        .gradient-btn {
+            background-image: linear-gradient(to right, #ec4899 0%, #8b5cf6 51%, #ec4899 100%);
+            background-size: 200% auto;
+            transition: 0.5s;
+        }
+        .gradient-btn:hover { background-position: right center; }
+        
+        .card-hover-effect {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px -5px rgba(236, 72, 153, 0.15);
+        }
+        .heart-btn.liked svg { fill: #ef4444; stroke: #ef4444; }
+
+        @keyframes pulse {
+            50% { opacity: 0.9; transform: scale(1.05); }
+        }
+        .animate-pulse-logo { animation: pulse 2.5s infinite ease-in-out; }
+
+        /* Bottom Nav */
+        .bottom-nav button.active { color: #8b5cf6; }
+        .bottom-nav button.active .nav-icon { transform: scale(1.1); }
+        .bottom-nav button .nav-text { transition: all 0.2s ease; }
+        .bottom-nav button.active .nav-text { font-weight: 600; }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <!-- Opening Page -->
+    <div id="opening-page" class="fixed inset-0 z-[100] flex flex-col items-center justify-center">
+        <h1 class="text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-500 tracking-tight animate-pulse-logo">iCORE</h1>
+        <p class="mt-4 text-gray-500">Your fashion marketplace</p>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="main-app" class="hidden opacity-0 max-w-md mx-auto bg-white shadow-2xl min-h-screen pb-20">
+        
+        <!-- App Header -->
+        <header class="sticky top-0 bg-white/80 backdrop-blur-md z-20 border-b border-gray-200">
+            <div class="px-4 py-3 flex justify-between items-center">
+                <h1 id="page-title" class="text-xl font-bold text-gray-800">Home</h1>
+                 <button id="cart-button" class="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i data-lucide="shopping-cart" class="w-6 h-6 text-gray-600"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-pink-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Page Wrapper -->
+        <main class="relative">
+            <!-- Home Page -->
+            <div id="home-page" class="app-page p-4">
+                 <!-- Search and Filters -->
+                 <div class="mb-6">
+                    <div class="relative">
+                        <input id="search-bar" type="text" placeholder="Find your next favorite piece..." class="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-pink-500 focus:border-transparent transition shadow-sm text-base">
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"><i data-lucide="search" class="w-5 h-5"></i></div>
+                        <button id="visual-search-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-violet-500">
+                            <i data-lucide="camera" class="w-5 h-5"></i>
+                        </button>
+                        <input type="file" id="visual-search-input" class="hidden" accept="image/*">
+                    </div>
+                    <div id="filters" class="flex space-x-2 mt-4 overflow-x-auto pb-2 -mx-4 px-4">
+                         <button data-filter="all" class="filter-btn active gradient-btn text-white flex-shrink-0 px-4 py-1.5 text-sm font-medium rounded-full transition shadow">All</button>
+                         <button data-filter="Tops" class="filter-btn bg-gray-100 border border-transparent flex-shrink-0 px-4 py-1.5 text-sm font-medium rounded-full transition hover:bg-gray-200">Tops</button>
+                         <button data-filter="Bottoms" class="filter-btn bg-gray-100 border border-transparent flex-shrink-0 px-4 py-1.5 text-sm font-medium rounded-full transition hover:bg-gray-200">Bottoms</button>
+                         <button data-filter="Dresses" class="filter-btn bg-gray-100 border border-transparent flex-shrink-0 px-4 py-1.5 text-sm font-medium rounded-full transition hover:bg-gray-200">Dresses</button>
+                         <button data-filter="Shoes" class="filter-btn bg-gray-100 border border-transparent flex-shrink-0 px-4 py-1.5 text-sm font-medium rounded-full transition hover:bg-gray-200">Shoes</button>
+                    </div>
+                </div>
+                <!-- Product Grid -->
+                <div id="product-grid" class="grid grid-cols-2 gap-4"></div>
+                <div id="no-results" class="hidden text-center py-10"><p class="text-gray-500">No items found.</p></div>
+            </div>
+
+            <!-- Wishlist Page -->
+            <div id="wishlist-page" class="app-page hidden p-4">
+                <div id="wishlist-items" class="space-y-2"></div>
+            </div>
+            
+            <!-- Sell Page -->
+            <div id="sell-page" class="app-page hidden p-4">
+                 <form id="sell-form" class="space-y-5">
+                    <input type="hidden" id="item-image-url" value="">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Photo</label>
+                        <div id="image-preview-container" class="mt-1 hidden w-full h-48 rounded-md overflow-hidden relative">
+                            <img id="image-preview" src="" class="w-full h-full object-cover">
+                            <button type="button" id="remove-image-btn" class="absolute top-2 right-2 bg-black/50 text-white rounded-full p-1">&times;</button>
+                        </div>
+                        <div id="image-upload-box" class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                            <div class="space-y-1 text-center">
+                                <i data-lucide="image-plus" class="mx-auto h-12 w-12 text-gray-400"></i>
+                                <div class="flex text-sm text-gray-600"><label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-violet-600 hover:text-violet-500"><span>Upload a file</span><input id="file-upload" type="file" class="sr-only"></label></div>
+                                <p class="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div><label class="text-sm font-medium text-gray-700">Title</label><input type="text" id="item-title" placeholder="e.g., Vintage Denim Jacket" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required></div>
+                    <div><label class="text-sm font-medium text-gray-700">Description</label><textarea id="item-description" rows="3" placeholder="Condition, size..." class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required></textarea></div>
+                    <button type="button" id="generate-description-btn" class="w-full flex justify-center items-center space-x-2 text-sm font-semibold text-violet-600 hover:bg-violet-50 py-2.5 rounded-lg transition-colors border border-violet-200">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i><span>✨ Generate with AI</span>
+                    </button>
+                    <div><label class="text-sm font-medium text-gray-700">Price (₹)</label><input type="number" id="item-price" placeholder="999" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required></div>
+                    <div><label class="text-sm font-medium text-gray-700">Category</label><select id="item-category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required><option>Tops</option><option>Bottoms</option><option>Dresses</option><option>Shoes</option><option>Accessories</option></select></div>
+                    <button type="submit" class="w-full gradient-btn text-white py-3 rounded-lg font-semibold shadow-md">List Item</button>
+                </form>
+            </div>
+
+            <!-- Account Page -->
+            <div id="account-page" class="app-page hidden p-4">
+                 <div class="flex items-center space-x-4 mb-8">
+                     <img src="https://placehold.co/100x100/E9D5FF/5B21B6?text=S" alt="User Avatar" class="w-20 h-20 rounded-full border-2 border-violet-300">
+                     <div>
+                         <h2 class="text-xl font-bold">Sanskriti</h2>
+                         <p class="text-sm text-gray-500">sanskriti@example.com</p>
+                     </div>
+                </div>
+                <div class="space-y-3">
+                    <div class="account-folder bg-gray-50 p-4 rounded-lg flex items-center space-x-4 cursor-pointer hover:bg-gray-100 transition"><i data-lucide="package" class="w-6 h-6 text-pink-500"></i><div><h3 class="font-semibold">Your Orders</h3><p class="text-xs text-gray-500">Track purchases</p></div></div>
+                    <div onclick="openModalWithContent('listings')" class="account-folder bg-gray-50 p-4 rounded-lg flex items-center space-x-4 cursor-pointer hover:bg-gray-100 transition"><i data-lucide="tag" class="w-6 h-6 text-violet-500"></i><div><h3 class="font-semibold">Your Listings</h3><p class="text-xs text-gray-500">Manage your items</p></div></div>
+                    <div class="account-folder bg-gray-50 p-4 rounded-lg flex items-center space-x-4 cursor-pointer hover:bg-gray-100 transition"><i data-lucide="settings" class="w-6 h-6 text-gray-500"></i><div><h3 class="font-semibold">Settings</h3><p class="text-xs text-gray-500">Account details</p></div></div>
+                    <div class="pt-4"><button class="w-full text-left bg-gray-100 p-3 rounded-lg flex items-center space-x-3 hover:bg-gray-200 transition"><i data-lucide="log-out" class="w-5 h-5 text-gray-600"></i><span class="font-semibold text-gray-700">Logout</span></button></div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Bottom Navigation -->
+        <footer class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+            <div class="bottom-nav flex justify-around">
+                <button data-page="home-page" class="nav-btn active flex-1 flex flex-col items-center justify-center pt-2 pb-1 text-gray-500 transition-colors">
+                    <i data-lucide="home" class="nav-icon w-6 h-6"></i>
+                    <span class="nav-text text-xs">Home</span>
+                </button>
+                <button data-page="wishlist-page" class="nav-btn flex-1 flex flex-col items-center justify-center pt-2 pb-1 text-gray-500 transition-colors">
+                    <i data-lucide="heart" class="nav-icon w-6 h-6"></i>
+                    <span class="nav-text text-xs">Wishlist</span>
+                </button>
+                <button data-page="sell-page" class="nav-btn flex-1 flex flex-col items-center justify-center pt-2 pb-1 text-gray-500 transition-colors">
+                    <i data-lucide="plus-circle" class="nav-icon w-6 h-6"></i>
+                    <span class="nav-text text-xs">Sell</span>
+                </button>
+                <button data-page="account-page" class="nav-btn flex-1 flex flex-col items-center justify-center pt-2 pb-1 text-gray-500 transition-colors">
+                    <i data-lucide="user" class="nav-icon w-6 h-6"></i>
+                    <span class="nav-text text-xs">Account</span>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modals Container -->
+    <div id="generic-modal" class="modal fixed inset-0 items-center justify-center hidden z-50">
+         <div class="modal-backdrop fixed inset-0"></div>
+         <div class="modal-content bg-white rounded-lg shadow-xl w-11/12 max-w-md m-4 relative transform opacity-0 -translate-y-10 overflow-y-auto"></div>
+    </div>
+    
+    <!-- Loading Overlay for AI Features -->
+    <div id="ai-loader" class="fixed inset-0 bg-black/50 z-[100] hidden items-center justify-center flex-col text-white">
+        <i data-lucide="loader-2" class="w-10 h-10 animate-spin"></i>
+        <p id="ai-loader-text" class="mt-4 font-semibold">Analyzing Image...</p>
+    </div>
+
+
+    <script>
+        // --- App Initialization ---
+        window.addEventListener('load', () => {
+            const openingPage = document.getElementById('opening-page');
+            const mainApp = document.getElementById('main-app');
+
+            setTimeout(() => {
+                openingPage.style.opacity = '0';
+                openingPage.addEventListener('transitionend', () => openingPage.classList.add('hidden'));
+
+                mainApp.classList.remove('hidden');
+                setTimeout(() => mainApp.style.opacity = '1', 50);
+
+            }, 2000); // Show opening page for 2 seconds
+        });
+
+        lucide.createIcons();
+
+        // --- Mock Data ---
+        let userProducts = [];
+        let userWishlist = new Set();
+        let userCart = new Set();
+        let products = [
+            { id: 1, title: 'Vintage Floral Dress', price: 1500, category: 'Dresses', seller: 'RetroFinds', sellerAvatar: 'https://placehold.co/100x100/E2D5C7/5E4837?text=R', image: 'https://images.unsplash.com/photo-1579369353590-7745c43a3b58?q=80&w=400', description: 'Beautiful vintage dress from the 90s. Perfect condition, fits size M.' },
+            { id: 2, title: 'Classic Leather Jacket', price: 3200, category: 'Tops', seller: 'UrbanEdge', sellerAvatar: 'https://placehold.co/100x100/A8A29E/44403C?text=U', image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=400', description: 'Timeless leather jacket. Barely worn. A staple for any wardrobe.' },
+            { id: 3, title: 'High-Waisted Jeans', price: 950, category: 'Bottoms', seller: 'DenimDreams', sellerAvatar: 'https://placehold.co/100x100/BFDBFE/1E3A8A?text=D', image: 'https://images.unsplash.com/photo-1604176354204-926873782855?q=80&w=400', description: 'Comfy and stylish high-waisted mom jeans. Size 28.' },
+            { id: 4, title: 'White Canvas Sneakers', price: 1200, category: 'Shoes', seller: 'SoleMates', sellerAvatar: 'https://placehold.co/100x100/FECACA/991B1B?text=S', image: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=400', description: 'Goes with everything! Classic white sneakers in great condition. Size 7.' },
+            { id: 5, title: 'Gold Hoop Earrings', price: 500, category: 'Accessories', seller: 'GoldenGems', sellerAvatar: 'https://placehold.co/100x100/FDE68A/B45309?text=G', image: 'https://images.unsplash.com/photo-1615210942857-454327894568?q=80&w=400', description: 'Elegant gold-plated hoop earrings. Hypoallergenic.' },
+            { id: 6, title: 'Cozy Knit Sweater', price: 1100, category: 'Tops', seller: 'WarmWears', sellerAvatar: 'https://placehold.co/100x100/D1FAE5/065F46?text=W', image: 'https://images.unsplash.com/photo-1618210986133-d25a6873e040?q=80&w=400', description: 'Super soft oversized knit sweater. Perfect for chilly days.' },
+        ];
+        
+        // --- DOM Elements ---
+        const productGrid = document.getElementById('product-grid');
+        const noResults = document.getElementById('no-results');
+        const pageTitle = document.getElementById('page-title');
+
+        // --- Page Navigation ---
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const pages = document.querySelectorAll('.app-page');
+        let currentPage = 'home-page';
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetPageId = button.dataset.page;
+                if (targetPageId === currentPage) return;
+
+                const targetPage = document.getElementById(targetPageId);
+                const currentPageEl = document.getElementById(currentPage);
+
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                pageTitle.textContent = targetPageId.split('-')[0].charAt(0).toUpperCase() + targetPageId.split('-')[0].slice(1);
+                if (targetPageId === 'wishlist-page') renderWishlistPage();
+
+                currentPageEl.style.opacity = '0';
+                setTimeout(() => {
+                    currentPageEl.classList.add('hidden');
+                    targetPage.classList.remove('hidden');
+                    setTimeout(() => targetPage.style.opacity = '1', 5);
+                }, 150);
+                currentPage = targetPageId;
+            });
+        });
+
+        
+        // --- Rendering Logic ---
+        function renderProducts(productsToRender) {
+            productGrid.innerHTML = '';
+            if (productsToRender.length === 0) { noResults.classList.remove('hidden'); return; }
+            noResults.classList.add('hidden');
+
+            productsToRender.forEach(product => {
+                const isLiked = userWishlist.has(product.id);
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-lg overflow-hidden border border-gray-100 shadow-sm cursor-pointer card-hover-effect flex flex-col';
+                card.innerHTML = `
+                    <div class="relative group">
+                        <img src="${product.image}" alt="${product.title}" class="w-full h-48 object-cover" onclick="openModalWithContent('product', ${product.id})">
+                        <button data-product-id="${product.id}" class="heart-btn ${isLiked ? 'liked' : ''} absolute top-2 right-2 bg-white/70 backdrop-blur-sm p-1.5 rounded-full text-gray-700 hover:text-red-500 transition-all duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                        </button>
+                    </div>
+                    <div class="p-3 flex-grow flex flex-col" onclick="openModalWithContent('product', ${product.id})">
+                        <h3 class="font-semibold text-sm truncate">${product.title}</h3>
+                        <p class="font-bold mt-1 text-gray-800">₹${product.price.toLocaleString('en-IN')}</p>
+                    </div>
+                `;
+                productGrid.appendChild(card);
+            });
+        }
+        
+        function renderWishlistPage() {
+            const wishlistContainer = document.getElementById('wishlist-items');
+            let wishlistProducts = products.filter(p => userWishlist.has(p.id));
+            if (wishlistProducts.length > 0) {
+                 wishlistContainer.innerHTML = wishlistProducts.map(p => `
+                    <div class="flex items-center justify-between p-2 rounded-md hover:bg-gray-50">
+                        <div class="flex items-center space-x-3" onclick="openModalWithContent('product', ${p.id})">
+                            <img src="${p.image}" class="w-16 h-16 rounded-md object-cover">
+                            <div><p class="font-semibold">${p.title}</p><p class="text-sm text-gray-600">₹${p.price.toLocaleString('en-IN')}</p></div>
+                        </div>
+                        <button onclick="toggleWishlist(${p.id}, true)" class="p-1.5 rounded-full text-red-500"><i data-lucide="heart" class="w-5 h-5 fill-current"></i></button>
+                    </div>`).join('');
+            } else {
+                 wishlistContainer.innerHTML = '<p class="text-center text-gray-500 pt-10">Your wishlist is empty.</p>';
+            }
+            lucide.createIcons();
+        }
+
+        // --- Generic Modal System ---
+        const genericModal = document.getElementById('generic-modal');
+        const modalContent = genericModal.querySelector('.modal-content');
+        
+        function openModal(contentHTML) {
+            modalContent.innerHTML = contentHTML;
+            genericModal.classList.remove('hidden');
+            genericModal.classList.add('flex');
+            setTimeout(() => {
+                 genericModal.classList.remove('opacity-0');
+                 modalContent.classList.remove('opacity-0', '-translate-y-10');
+            }, 10);
+            lucide.createIcons();
+        }
+        
+        function closeModal() {
+            genericModal.classList.add('opacity-0');
+            modalContent.classList.add('opacity-0', '-translate-y-10');
+            setTimeout(() => {
+                genericModal.classList.add('hidden');
+                genericModal.classList.remove('flex');
+                modalContent.innerHTML = '';
+            }, 300);
+        }
+        genericModal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+        
+        // --- Modal Content Generators ---
+        const modalContentGenerators = {
+            product: (productId) => {
+                const product = products.find(p => p.id === productId);
+                const isInCart = userCart.has(productId);
+                return `
+                    <button onclick="closeModal()" class="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-100 transition z-10">&times;</button>
+                    <img src="${product.image}" alt="${product.title}" class="w-full h-64 object-cover rounded-t-lg">
+                    <div class="p-5">
+                        <h2 class="text-2xl font-bold">${product.title}</h2>
+                        <p class="text-xl font-semibold text-gray-800 mt-1">₹${product.price.toLocaleString('en-IN')}</p>
+                        <div class="flex items-center space-x-3 my-4">
+                            <img src="${product.sellerAvatar}" alt="${product.seller}" class="w-10 h-10 rounded-full object-cover">
+                            <div><p class="font-semibold text-sm">${product.seller}</p></div>
+                        </div>
+                        <p class="text-gray-600 text-sm">${product.description}</p>
+                        
+                        <div class="mt-5 pt-5 border-t border-gray-200">
+                            <h3 class="text-base font-bold flex items-center space-x-2"><i data-lucide="sparkles" class="w-5 h-5 text-pink-500"></i><span>✨ Style it With AI</span></h3>
+                            <div id="style-suggestions" class="mt-3 space-y-2">
+                                <div class="style-suggestion-loader animate-pulse flex space-x-3"><div class="h-10 w-10 rounded-md bg-gray-200"></div><div class="flex-1 space-y-2 py-1"><div class="h-3 bg-gray-200 rounded"></div><div class="h-2 bg-gray-200 rounded w-5/6"></div></div></div>
+                            </div>
+                        </div>
+
+                        <button id="add-to-cart-btn" data-product-id="${product.id}" class="w-full mt-5 gradient-btn text-white py-3 rounded-lg font-semibold flex items-center justify-center space-x-2 ${isInCart ? 'opacity-70 cursor-not-allowed' : ''}" ${isInCart ? 'disabled' : ''}>
+                           <i data-lucide="${isInCart ? 'check-circle' : 'shopping-cart'}" class="w-5 h-5"></i><span>${isInCart ? 'Added to Cart' : 'Add to Cart'}</span>
+                        </button>
+                    </div>`;
+            },
+            listings: () => `...`, 
+            cart: () => {
+                const cartProducts = products.filter(p => userCart.has(p.id));
+                const subtotal = cartProducts.reduce((acc, p) => acc + p.price, 0);
+                let cartHTML = cartProducts.length > 0 ? cartProducts.map(p => `
+                    <div class="flex items-center justify-between p-2 rounded-md">
+                        <div class="flex items-center space-x-3">
+                            <img src="${p.image}" class="w-16 h-16 rounded-md object-cover">
+                            <div><p class="font-semibold">${p.title}</p><p class="text-sm text-gray-600">₹${p.price.toLocaleString('en-IN')}</p></div>
+                        </div>
+                        <button onclick="removeFromCart(${p.id})" class="p-1.5 rounded-full hover:bg-red-100 text-gray-500 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>`).join('') : '<p class="text-center text-gray-500 py-4">Your cart is empty.</p>';
+                
+                return `
+                    <div class="p-5"><div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">Shopping Cart</h2><button onclick="closeModal()" class="p-1 rounded-full hover:bg-gray-100">&times;</button></div>
+                    <div class="space-y-2 max-h-64 overflow-y-auto pr-2">${cartHTML}</div>
+                    ${cartProducts.length > 0 ? `
+                    <div class="mt-5 pt-5 border-t">
+                        <div class="flex justify-between font-semibold"><p>Subtotal</p><p>₹${subtotal.toLocaleString('en-IN')}</p></div>
+                        <button class="w-full mt-4 gradient-btn text-white py-3 rounded-lg font-semibold">Checkout</button>
+                    </div>` : ''}
+                    </div>`;
+            }
+        };
+        
+        function openModalWithContent(type, ...args) {
+            const contentHTML = modalContentGenerators[type](...args);
+            if (contentHTML) openModal(contentHTML);
+
+            if (type === 'product') {
+                const product = products.find(p => p.id === args[0]);
+                setTimeout(() => loadStyleSuggestions(product), 100);
+            }
+        }
+
+        // --- Event Handlers ---
+        document.getElementById('cart-button').addEventListener('click', () => openModalWithContent('cart'));
+        
+        document.addEventListener('click', (e) => {
+            const heartButton = e.target.closest('.heart-btn');
+            if (heartButton) {
+                toggleWishlist(parseInt(heartButton.dataset.productId), false);
+            }
+            const addToCartBtn = e.target.closest('#add-to-cart-btn');
+            if(addToCartBtn) {
+                addToCart(parseInt(addToCartBtn.dataset.productId));
+            }
+        });
+        
+        function toggleWishlist(productId, fromModal) {
+            const heartButton = document.querySelector(`.heart-btn[data-product-id="${productId}"]`);
+            if (userWishlist.has(productId)) {
+                userWishlist.delete(productId);
+                if (heartButton) heartButton.classList.remove('liked');
+            } else {
+                userWishlist.add(productId);
+                if (heartButton) heartButton.classList.add('liked');
+            }
+            if (fromModal) renderWishlistPage();
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cart-badge');
+            badge.textContent = userCart.size;
+            badge.classList.toggle('hidden', userCart.size === 0);
+        }
+
+        function addToCart(productId) {
+            userCart.add(productId);
+            updateCartBadge();
+            const btn = document.getElementById('add-to-cart-btn');
+            if(btn && btn.dataset.productId == productId){
+                btn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i><span>Added to Cart</span>`;
+                btn.disabled = true;
+                btn.classList.add('opacity-70', 'cursor-not-allowed');
+                lucide.createIcons();
+            }
+        }
+        
+        function removeFromCart(productId) {
+            userCart.delete(productId);
+            updateCartBadge();
+            openModalWithContent('cart');
+        }
+
+        const sellForm = document.getElementById('sell-form');
+        sellForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newItem = {
+                id: Date.now(), title: document.getElementById('item-title').value,
+                price: parseFloat(document.getElementById('item-price').value),
+                category: document.getElementById('item-category').value, seller: 'Sanskriti',
+                sellerAvatar: 'https://placehold.co/100x100/E9D5FF/5B21B6?text=S',
+                image: document.getElementById('item-image-url').value || 'https://placehold.co/400x400/ede9fe/8b5cf6?text=iCORE',
+                description: document.getElementById('item-description').value
+            };
+            products.unshift(newItem);
+            userProducts.unshift(newItem);
+            filterAndSearch();
+            sellForm.reset();
+            resetImageUpload();
+            document.querySelector('.nav-btn[data-page="home-page"]').click();
+        });
+
+        const fileInput = document.getElementById('file-upload');
+        const imagePreviewContainer = document.getElementById('image-preview-container');
+        const imagePreview = document.getElementById('image-preview');
+        const imageUploadBox = document.getElementById('image-upload-box');
+        const itemImageUrl = document.getElementById('item-image-url');
+        
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    imagePreview.src = event.target.result;
+                    itemImageUrl.value = event.target.result;
+                    imagePreviewContainer.classList.remove('hidden');
+                    imageUploadBox.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        document.getElementById('remove-image-btn').addEventListener('click', resetImageUpload);
+
+        function resetImageUpload() {
+            fileInput.value = ''; imagePreview.src = ''; itemImageUrl.value = '';
+            imagePreviewContainer.classList.add('hidden'); imageUploadBox.classList.remove('hidden');
+        }
+
+        const searchBar = document.getElementById('search-bar');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+
+        function filterAndSearch() {
+            const searchTerm = searchBar.value.toLowerCase();
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+            const filtered = products.filter(p => (activeFilter === 'all' || p.category === activeFilter) && (p.title.toLowerCase().includes(searchTerm) || p.description.toLowerCase().includes(searchTerm)));
+            renderProducts(filtered);
+        }
+        searchBar.addEventListener('input', filterAndSearch);
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active', 'gradient-btn', 'text-white');
+                    btn.classList.add('bg-gray-100');
+                });
+                button.classList.add('active', 'gradient-btn', 'text-white');
+                button.classList.remove('bg-gray-100');
+                filterAndSearch();
+            });
+        });
+
+        // --- Gemini API Integration ---
+        const apiKey = ""; // Leave blank
+        const aiLoader = document.getElementById('ai-loader');
+        const aiLoaderText = document.getElementById('ai-loader-text');
+
+        async function callGeminiAPI(payload) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    throw new Error(`API call failed with status: ${response.status}`);
+                }
+                const result = await response.json();
+                return result.candidates?.[0]?.content?.parts?.[0]?.text || "";
+            } catch (error) {
+                console.error("Gemini API call error:", error);
+                throw error;
+            }
+        }
+        
+        async function loadStyleSuggestions(product) {
+            const suggestionsContainer = document.getElementById('style-suggestions');
+            if (!suggestionsContainer) return;
+            try {
+                const prompt = `You are a fashion stylist. Suggest 2 items to style with a "${product.title}". For each item, provide a short reason. Respond in a valid JSON array of objects like this: [{"item": "Item Name", "reason": "Reason here"}]. Keep it concise.`;
+                const payload = { contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } };
+                const responseText = await callGeminiAPI(payload);
+                const suggestions = JSON.parse(responseText);
+
+                if (suggestions && suggestions.length > 0) {
+                    suggestionsContainer.innerHTML = suggestions.map(s => `<div class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50"><div class="w-10 h-10 bg-pink-100 rounded-md flex items-center justify-center flex-shrink-0"><i data-lucide="shirt" class="w-5 h-5 text-pink-500"></i></div><div><p class="font-semibold text-sm">${s.item}</p><p class="text-xs text-gray-500">${s.reason}</p></div></div>`).join('');
+                    lucide.createIcons();
+                } else { suggestionsContainer.innerHTML = '<p class="text-sm text-gray-500">No ideas right now.</p>'; }
+            } catch (e) { suggestionsContainer.innerHTML = '<p class="text-sm text-gray-500">Could not get ideas.</p>'; }
+        }
+
+        document.getElementById('generate-description-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('generate-description-btn');
+            const itemTitleInput = document.getElementById('item-title');
+            if (!itemTitleInput.value) { alert("Please provide a title first!"); return; }
+            
+            const originalBtnContent = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Generating...</span>`;
+            btn.disabled = true;
+            lucide.createIcons();
+
+            try {
+                const prompt = `Generate a catchy title and a compelling, brief (2-3 sentences) product description for a second-hand fashion item. The user's input title is "${itemTitleInput.value}" and category is "${document.getElementById('item-category').value}". Make the tone friendly and highlight its thrifted nature. Respond in a valid JSON object like {"title": "New Title", "description": "New Description"}.`;
+                const payload = { contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } };
+                const responseText = await callGeminiAPI(payload);
+                const res = JSON.parse(responseText);
+                
+                if (res.title) itemTitleInput.value = res.title;
+                if (res.description) document.getElementById('item-description').value = res.description;
+            } catch (e) { alert("Could not generate description."); } finally {
+                btn.innerHTML = originalBtnContent;
+                btn.disabled = false;
+                lucide.createIcons();
+            }
+        });
+
+        // --- Visual Search Feature ---
+        const visualSearchBtn = document.getElementById('visual-search-btn');
+        const visualSearchInput = document.getElementById('visual-search-input');
+
+        visualSearchBtn.addEventListener('click', () => visualSearchInput.click());
+        visualSearchInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            aiLoaderText.textContent = "Analyzing Image...";
+            aiLoader.classList.remove('hidden');
+            aiLoader.classList.add('flex');
+            
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64ImageData = e.target.result.split(',')[1];
+                const prompt = "Describe the main clothing item in this image using 3-5 keywords for a product search (e.g., 'blue denim jacket, oversized, distressed'). Be concise and focus on searchable terms.";
+                
+                const payload = {
+                    contents: [{
+                        parts: [
+                            { text: prompt },
+                            { inlineData: { mimeType: file.type, data: base64ImageData } }
+                        ]
+                    }]
+                };
+
+                try {
+                    const description = await callGeminiAPI(payload);
+                    searchBar.value = description.replace(/['"]+/g, ''); // Clean up quotes
+                    filterAndSearch();
+                } catch (error) {
+                    alert("Sorry, could not analyze the image. Please try again.");
+                } finally {
+                    aiLoader.classList.add('hidden');
+                    aiLoader.classList.remove('flex');
+                    visualSearchInput.value = ''; // Reset input
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // --- Initial Render ---
+        renderProducts(products);
+    </script>
+</body>
+</html>
+

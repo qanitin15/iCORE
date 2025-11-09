@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "email": "sanskriti@example.com",
+    "name": "Sanskriti",
+    "avatar": "https://i.pravatar.cc/150?u=sanskriti",
+    "wishlist": "[2, 4]",
+    "cart": "[]"
+  },
+  {
+    "id": 2,
+    "email": "ritika@gmail.com",
+    "name": "ritika",
+    "avatar": "",
+    "wishlist": "[]",
+    "cart": "[]"
+  },
+  {
+    "id": 3,
+    "email": "testuser@example.com",
+    "name": "TestUser",
+    "avatar": "",
+    "wishlist": "[2, 3]",
+    "cart": "[]"
+  },
+  {
+    "id": 4,
+    "email": "abc@example",
+    "name": "abc",
+    "avatar": "",
+    "wishlist": "[]",
+    "cart": "[]"
+  }
+]

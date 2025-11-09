@@ -1,0 +1,83 @@
+[2025-10-03T09:42:00.317841] register attempt failed - user exists: kotnalasanskriti02@gmail.com
+[2025-10-03T09:42:13.735247] registered and auto-logged-in: ritila@gmail.com
+[2025-10-03T09:42:27.230687] session_check: logged in as ritila@gmail.com
+[2025-10-03T09:46:55.886007] session_check: logged in as ritila@gmail.com
+[2025-10-03T09:47:01.610922] session_check: logged in as ritila@gmail.com
+[2025-10-03T09:47:23.583978] avatar uploaded for ritila@gmail.com: /static/uploads/cf042ca0c89141948a5a8a7727f25110.jpeg
+[2025-10-03T09:47:34.012093] avatar uploaded for ritila@gmail.com: /static/uploads/14f5054ac8884e009278ffea72196e57.jpg
+[2025-10-03T09:47:46.198121] avatar uploaded for ritila@gmail.com: /static/uploads/62ce0d8554de46b5986743f3a83c03d3.png
+[2025-10-03T09:48:06.612094] session_check: logged in as ritila@gmail.com
+[2025-10-03T09:50:12.083400] session_check: logged in as ritila@gmail.com
+[2025-10-03T09:50:18.434531] session_check: logged in as ritila@gmail.com
+[2025-10-03T09:50:28.692931] session_check: logged in as sanskriti@example.com
+[2025-10-03T09:50:32.787926] session_check: logged in as sanskriti@example.com
+[2025-10-03T09:50:59.694997] session_check: logged in as ritila@gmail.com
+[2025-10-03T09:51:04.714473] session_check: logged in as ritila@gmail.com
+[2025-10-03T10:36:31.236125] session_check: logged in as sanskriti@example.com
+[2025-10-03T10:36:38.502026] session_check: logged in as sanskriti@example.com
+[2025-10-03T10:39:29.757394] session_check: logged in as ritila@gmail.com
+[2025-10-03T10:40:56.660140] session_check: logged in as ritila@gmail.com
+[2025-10-03T10:41:11.135514] session_check: logged in as sanskriti@example.com
+[2025-10-03T10:41:16.233652] session_check: logged in as sanskriti@example.com
+[2025-10-03T10:42:54.559820] session_check: logged in as sanskriti@example.com
+[2025-10-03T10:44:26.974873] session_check: logged in as sanskriti@example.com
+[2025-10-03T10:45:13.467021] session_check: logged in as sanskriti@example.com
+[2025-10-03T10:46:40.048230] session_check: logged in as sanskriti@example.com
+[2025-10-03T10:48:54.601441] session_check: logged in as sanskriti@example.com
+[2025-10-03T10:51:24.732105] session_check: logged in as sanskriti@example.com
+[2025-10-03T10:53:26.578803] session_check: logged in as sanskriti@example.com
+[2025-10-03T10:57:00.505398] session_check: logged in as sanskriti@example.com
+[2025-10-03T10:57:49.938931] session_check: logged in as sanskriti@example.com
+[2025-10-03T11:00:28.514982] registered and auto-logged-in: xyz@example.com
+[2025-10-03T11:01:45.055124] session_check: logged in as xyz@example.com
+[2025-10-03T11:03:55.573891] registered and auto-logged-in: anita@example.com
+[2025-10-03T11:04:03.019476] session_check: logged in as anita@example.com
+[2025-10-03T11:04:14.601511] session_check: logged in as anita@example.com
+[2025-10-03T11:04:27.995240] session_check: logged in as anita@example.com
+[2025-10-03T11:10:25.565959] session_check: logged in as anita@example.com
+[2025-10-03T11:11:43.867397] session_check: logged in as anita@example.com
+[2025-10-03T11:11:59.616247] session_check: logged in as anita@example.com
+[2025-10-03T11:14:34.917282] session_check: logged in as anita@example.com
+[2025-10-03T11:19:19.384014] session_check: logged in as anita@example.com
+[2025-10-03T11:19:27.117545] session_check: logged in as anita@example.com
+[2025-10-05T09:06:17.892003] session_check: logged in as sanskriti@example.com
+[2025-10-05T09:08:00.230653] registered and auto-logged-in: ritika@gmail.com
+[2025-10-05T09:08:35.168900] session_check: logged in as ritika@gmail.com
+[2025-10-05T09:31:12.324781] session_check: logged in as ritika@gmail.com
+[2025-10-05T09:31:23.576513] session_check: logged in as ritika@gmail.com
+[2025-10-05T09:41:50.796881] session_check: logged in as sanskriti@example.com
+[2025-10-05T09:42:24.846143] session_check: logged in as sanskriti@example.com
+[2025-10-05T09:48:11.407716] registered and auto-logged-in: testuser@example.com
+[2025-10-05T09:48:11.447511] session_check: logged in as testuser@example.com
+[2025-10-05T10:12:25.610406] register attempt failed - user exists: testuser@example.com
+[2025-10-05T10:12:25.626520] session_check: not logged in
+[2025-10-05T10:16:55.107858] register attempt failed - user exists: testuser@example.com
+[2025-10-05T10:16:55.839021] session_check: logged in as testuser@example.com
+[2025-10-06T17:04:03.872900] session_check: not logged in
+[2025-10-06T17:26:55.244845] register attempt failed - user exists: testuser@example.com
+[2025-10-06T17:26:55.695767] session_check: logged in as testuser@example.com
+[2025-10-06T17:33:32.156903] session_check: logged in as sanskriti@example.com
+[2025-10-08T04:41:11.811564] session_check: not logged in
+[2025-10-08T04:43:13.073276] session_check: logged in as sanskriti@example.com
+[2025-10-08T04:45:13.884520] session_check: logged in as ritika@gmail.com
+[2025-10-08T04:45:49.445190] session_check: logged in as ritika@gmail.com
+[2025-10-08T04:46:32.404310] registered and auto-logged-in: abc@example
+[2025-10-08T04:47:58.413335] session_check: logged in as abc@example
+[2025-10-08T04:50:21.416352] session_check: logged in as abc@example
+[2025-10-08T04:50:28.315101] session_check: logged in as abc@example
+[2025-10-08T05:05:57.026812] session_check: logged in as abc@example
+[2025-10-08T05:06:11.726699] session_check: logged in as abc@example
+[2025-10-08T05:06:29.721551] session_check: logged in as abc@example
+[2025-10-08T05:06:52.779849] session_check: logged in as abc@example
+[2025-10-08T05:14:46.404775] session_check: logged in as abc@example
+[2025-10-08T05:23:15.969431] session_check: logged in as abc@example
+[2025-10-08T05:25:13.022285] session_check: logged in as abc@example
+[2025-10-08T05:25:29.024714] session_check: logged in as abc@example
+[2025-10-08T05:36:01.428227] session_check: logged in as abc@example
+[2025-11-03T14:51:57.348242] create_user exception: table users has no column named password_hash
+[2025-11-03T14:51:57.349245] register attempt failed - user exists: ritika@gmail.com
+[2025-11-03T14:53:46.814896] create_user exception: table users has no column named password_hash
+[2025-11-03T14:53:46.830239] register attempt failed - user exists: nitin@gmail.com
+[2025-11-03T15:09:27.377241] registered and auto-logged-in: nitinchawla@gmail.com
+[2025-11-03T15:10:44.824818] session_check: logged in as nitinchawla@gmail.com
+[2025-11-03T15:11:56.721077] registered and auto-logged-in: ritika_chawla@gmail.com

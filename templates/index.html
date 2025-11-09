@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>iCORE App</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #f43f5e, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-btn {
+            background-image: linear-gradient(to right, #f43f5e 0%, #a855f7 51%, #f43f5e 100%);
+            background-size: 200% auto;
+            transition: all 0.5s;
+        }
+
+        .gradient-btn:hover {
+            background-position: right center;
+            box-shadow: 0 10px 20px -5px rgba(236, 72, 153, 0.4);
+        }
+
+        .gradient-border {
+            border: 2px solid;
+            border-image-slice: 1;
+            border-image-source: linear-gradient(to bottom right, #f43f5e, #a855f7);
+        }
+
+        #splash-screen,
+        .app-page,
+        .modal-backdrop,
+        .modal-content {
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d8b4fe;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f472b6;
+        }
+
+        .card-hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px -5px rgba(236, 72, 153, 0.15);
+        }
+
+        .heart-btn.liked svg {
+            fill: #f43f5e;
+            stroke: #f43f5e;
+        }
+
+        @keyframes pulse {
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .animate-pulse-logo {
+            animation: pulse 2.5s infinite ease-in-out;
+        }
+
+        .bottom-nav button.active {
+            color: #a855f7;
+            font-weight: 600;
+        }
+
+        .bottom-nav button.active .nav-icon {
+            transform: scale(1.1);
+            background: linear-gradient(to top, #f5d0fe, #fbcfe8);
+            border-radius: 9999px;
+            padding: 4px;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .animate-pop {
+            animation: pop 0.3s ease-out;
+        }
+
+        #toast {
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #login {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #f43f5e, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-btn {
+            background-image: linear-gradient(to right, #f43f5e 0%, #a855f7 51%, #f43f5e 100%);
+            background-size: 200% auto;
+            transition: all 0.5s;
+        }
+
+        .gradient-btn:hover {
+            background-position: right center;
+            box-shadow: 0 10px 20px -5px rgba(236, 72, 153, 0.4);
+        }
+
+        .gradient-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body class="antialiased text-gray-800">
+    <div id="login" class="min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+            <div>
+                <h1 class="text-center text-6xl font-extrabold tracking-tight gradient-text">iCORE</h1>
+                <h2 class="mt-4 text-center text-2xl font-bold text-gray-900">
+                    Sign in to your account
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Or
+                    <a href="#" class="font-medium text-purple-600 hover:text-purple-500">
+                        start your 14-day free trial
+                    </a>
+                </p>
+            </div>
+
+            <form id="login-form" class="mt-8 space-y-6 bg-white p-8 shadow-xl rounded-2xl">
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <div>
+                        <label for="email-address" class="sr-only">Email address</label>
+                        <input id="email-address" name="email" type="email" autocomplete="email" required
+                            class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                            placeholder="Email address">
+                    </div>
+                    <div>
+                        <label for="password" class="sr-only">Password</label>
+                        <input id="password" name="password" type="password" autocomplete="current-password" required
+                            class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                            placeholder="Password">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="remember-me" name="remember-me" type="checkbox"
+                            class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                        <label for="remember-me" class="ml-2 block text-sm text-gray-900">
+                            Remember me
+                        </label>
+                    </div>
+
+                    <div class="text-sm">
+                        <a href="#" class="font-medium text-purple-600 hover:text-purple-500">
+                            Forgot your password?
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <button id="login-button" type="submit"
+                        class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-md text-white gradient-btn focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <i data-lucide="lock" class="h-5 w-5 text-purple-300 group-hover:text-purple-200"
+                                aria-hidden="true"></i>
+                        </span>
+                        Sign In
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            const loginForm = document.getElementById('login-form');
+            const loginButton = document.getElementById('login-button');
+            const originalButtonText = loginButton.innerHTML;
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault(); // Prevent the form from actually submitting and reloading the page
+
+                // Get form values (in a real app, you'd send these to a server)
+                const email = document.getElementById('email-address').value;
+                const password = document.getElementById('password').value;
+
+                if (!email || !password) {
+                    alert('Please fill in both email and password.');
+                    return;
+                }
+
+                // --- Simulate a login process ---
+
+                // 1. Show a loading state on the button
+                loginButton.disabled = true;
+                loginButton.innerHTML = `
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Signing In...
+                `;
+
+                // 2. Wait for 1.5 seconds to simulate a network request
+                setTimeout(() => {
+                    // 3. On success, show an alert and reveal the single-page app
+                    // NOTE: In a real app, this would wait for a server response.
+                    alert('Login successful! Welcome back.');
+
+                    // Reveal the in-page main app instead of navigating to a separate file
+                    const loginDiv = document.getElementById('login');
+                    const mainApp = document.getElementById('main-app');
+                    if (loginDiv) loginDiv.classList.add('hidden');
+                    if (mainApp) mainApp.classList.remove('hidden');
+
+                    // Restore button state
+                    loginButton.disabled = false;
+                    loginButton.innerHTML = originalButtonText;
+                }, 1500);
+            });
+        });
+    </script>
+    <div id="splash-screen"
+        class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gradient-to-br from-rose-50 via-purple-50 to-white">
+        <h1 class="text-7xl font-extrabold tracking-tight animate-pulse-logo gradient-text">iCORE</h1>
+        <p class="mt-4 text-gray-500">Your Ultimate Thrift & Style Companion</p>
+    </div>
+
+    <div id="main-app" class="hidden max-w-md mx-auto bg-white shadow-2xl min-h-screen pb-20 sm:max-w-xl md:max-w-2xl">
+
+        <header class="sticky top-0 bg-white/80 backdrop-blur-md z-20 border-b border-gray-200 shadow-sm">
+            <div class="px-4 py-3 flex justify-between items-center">
+                <h1 id="page-title" class="text-xl font-bold text-gray-800">Home</h1>
+                <button id="cart-button" class="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <i data-lucide="shopping-cart" class="w-6 h-6 text-gray-600"></i>
+                    <span id="cart-badge"
+                        class="absolute -top-1 -right-1 bg-rose-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="relative">
+            <div id="home-page" class="app-page p-4 space-y-8">
+            </div>
+
+            <div id="wishlist-page" class="app-page hidden p-4">
+                <div id="wishlist-items" class="space-y-4"></div>
+            </div>
+
+            <div id="sell-page" class="app-page hidden p-4">
+                <form id="sell-form" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Photo</label>
+                        <div id="image-preview-container"
+                            class="mt-1 hidden w-full h-48 rounded-md overflow-hidden relative">
+                            <img id="image-preview" src="" class="w-full h-full object-cover">
+                            <button type="button" id="remove-image-btn"
+                                class="absolute top-2 right-2 bg-black/50 text-white rounded-full p-1 leading-none">&times;</button>
+                        </div>
+                        <div id="image-upload-box"
+                            class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer hover:border-purple-400">
+                            <div class="space-y-1 text-center">
+                                <i data-lucide="image-plus" class="mx-auto h-12 w-12 text-gray-400"></i>
+                                <div class="flex text-sm text-gray-600">
+                                    <label for="file-upload"
+                                        class="relative cursor-pointer bg-white rounded-md font-medium text-purple-600 hover:text-purple-500">
+                                        <span>Upload a file</span>
+                                        <input id="file-upload" name="file-upload" type="file" class="sr-only"
+                                            accept="image/png, image/jpeg">
+                                    </label>
+                                </div>
+                                <p class="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div><label for="sell-title" class="text-sm font-medium text-gray-700">Title</label><input
+                            id="sell-title" type="text" placeholder="e.g., Vintage Denim Jacket"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                            required></div>
+                    <div><label for="sell-desc" class="text-sm font-medium text-gray-700">Description</label><textarea
+                            id="sell-desc" rows="3" placeholder="Describe the condition, size, material..."
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                            required></textarea></div>
+                    <div><label for="sell-price" class="text-sm font-medium text-gray-700">Price (₹)</label><input
+                            id="sell-price" type="number" placeholder="499"
+                            class="mt-1 block w-full rounded-md border.GRAY-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                            required></div>
+                    <div><label for="sell-cat" class="text-sm font-medium text-gray-700">Category</label><select
+                            id="sell-cat"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                            required>
+                            <option>Tops</option>
+                            <option>Dresses</option>
+                            <option>Shoes</option>
+                            <option>Accessories</option>
+                        </select></div>
+                    <button type="submit"
+                        class="w-full gradient-btn text-white py-3 rounded-lg font-semibold shadow-md">List My
+                        Item</button>
+                </form>
+            </div>
+
+            <div id="account-page" class="app-page hidden p-4">
+                <div class="flex flex-col items-center text-center">
+                    <img src="https://i.pravatar.cc/150?u=sanskriti" alt="User Avatar"
+                        class="w-24 h-24 rounded-full p-1 gradient-border">
+                    <h2 class="text-2xl font-bold mt-3">Sanskriti</h2>
+                    <p class="text-sm text-gray-500">sanskriti@example.com</p>
+                </div>
+                <div class="grid grid-cols-3 gap-4 text-center my-8">
+                    <div>
+                        <p class="text-2xl font-bold">12</p>
+                        <p class="text-sm text-gray-500">Items Sold</p>
+                    </div>
+                    <div>
+                        <p id="active-listings-count" class="text-2xl font-bold">0</p>
+                        <p class="text-sm text-gray-500">Listings</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold">142</p>
+                        <p class="text-sm text-gray-500">Followers</p>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <a onclick="openModal('userListings')"
+                        class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
+                        <div class="flex items-center gap-4"><i data-lucide="tag"
+                                class="w-6 h-6 text-purple-500"></i><span class="font-semibold">Your Listings</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+                    </a>
+                    <a onclick="showToast('Feature coming soon!')"
+                        class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
+                        <div class="flex items-center gap-4"><i data-lucide="package"
+                                class="w-6 h-6 text-rose-500"></i><span class="font-semibold">Purchase History</span>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+                    </a>
+                    <a onclick="showToast('Feature coming soon!')"
+                        class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer">
+                        <div class="flex items-center gap-4"><i data-lucide="settings"
+                                class="w-6 h-6 text-gray-500"></i><span class="font-semibold">Settings</span></div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+                    </a>
+                </div>
+                <div class="mt-8">
+                    <button onclick="alert('You have been logged out.')"
+                        class="w-full flex items-center justify-center gap-2 p-3 bg-gray-100 rounded-lg font-semibold text-gray-700 hover:bg-rose-100 hover:text-rose-600 transition">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer
+            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto sm:max-w-xl md:max-w-2xl bg-white border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+            <div class="bottom-nav flex justify-around">
+                <button data-page="home-page"
+                    class="nav-btn active flex-1 flex flex-col items-center justify-center pt-2 pb-1 text-gray-500 transition-colors">
+                    <span class="nav-icon"><i data-lucide="home" class="w-6 h-6"></i></span><span
+                        class="text-xs mt-1">Home</span>
+                </button>
+                <button data-page="wishlist-page"
+                    class="nav-btn flex-1 flex flex-col items-center justify-center pt-2 pb-1 text-gray-500 transition-colors">
+                    <span class="nav-icon"><i data-lucide="heart" class="w-6 h-6"></i></span><span
+                        class="text-xs mt-1">Wishlist</span>
+                </button>
+                *** End OF FILE
