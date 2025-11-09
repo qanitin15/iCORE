@@ -956,12 +956,31 @@ if not ok:
     raise SystemExit(1)
 
 if __name__ == '__main__':
+    import os
+
+    # Prefer platform PORT (Render, Heroku, etc.), then fall back to custom ICORE_PORT
+    PORT = int(os.environ.get("PORT") or os.environ.get("ICORE_PORT", "5000"))
     HOST = os.environ.get("ICORE_HOST", "0.0.0.0")
-    PORT = int(os.environ.get("ICORE_PORT", "5000"))
+
+    # Ensure Django settings module is set (adjust 'iCORE.settings' if your settings module is named differently)
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "iCORE.settings")
+
     try:
         from waitress import serve
         print(f"Starting app with Waitress on {HOST}:{PORT}")
+        # If your app is a Flask app, serve(app, ...) is fine.
+        # If `app` is a WSGI application (Django WSGI), ensure it's the WSGI callable (commonly named 'application').
+        # If you use Django, change `serve(app, ...)` to `serve(application, ...)` where application = get_wsgi_application()
         serve(app, host=HOST, port=PORT)  # blocks
-    except Exception:
-        print(f"Waitress not available or failed, running Flask dev server on {HOST}:{PORT}")
-        app.run(host=HOST, port=PORT, debug=False)
+    except Exception as e:
+        print(f"Waitress not available or failed ({e}), running fallback dev server on {HOST}:{PORT}")
+        try:
+            # If app is a Flask app:
+            app.run(host=HOST, port=PORT, debug=False)
+        except Exception:
+            # If this is actually a Django WSGI app, try using the Django development server fallback
+            from django.core.wsgi import get_wsgi_application
+            application = get_wsgi_application()
+            from waitress import serve as wait_serve  # attempt again
+            wait_serve(application, host=HOST, port=PORT)
+
