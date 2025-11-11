@@ -967,7 +967,7 @@ if __name__ == '__main__':
 
     try:
         from waitress import serve
-        print(f"Starting app with Waitress on {HOST}:{PORT}")
+        print(f"Starting app with Waitress on --> {HOST}:{PORT}")
         # If your app is a Flask app, serve(app, ...) is fine.
         # If `app` is a WSGI application (Django WSGI), ensure it's the WSGI callable (commonly named 'application').
         # If you use Django, change `serve(app, ...)` to `serve(application, ...)` where application = get_wsgi_application()
