@@ -18,7 +18,7 @@ if resp.status_code == 409:
 # 2) Ensure session is active via session_check
 resp = s.get(BASE + '/api/session_check')
 print('session_check', resp.status_code, resp.json())
-
+print('dry run')
 # 3) Create a tiny image bytes file
 img_path = 'test_img.png'
 from PIL import Image
